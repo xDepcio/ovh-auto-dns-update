@@ -1,0 +1,19 @@
+[project]
+name = "ovh-auto-dns-update"
+version = "0.1.0"
+description = "Automatically update OVH DNS settings when your IP changes"
+authors = [
+    {name = "xDepcio", email = "olek.drwal@gmail.com"},
+]
+dependencies = []
+requires-python = ">=3.12"
+readme = "README.md"
+license = {text = "MIT"}
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+
+[tool.pdm]
+distribution = true
