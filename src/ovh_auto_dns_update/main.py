@@ -89,10 +89,40 @@ class AppDirHandler:
             return f.read()
 
 
+class OVHApiController:
+
+    @staticmethod
+    def delete_A_record(subdomain: str):
+        record_id = OVHApiController.get_A_record_id(subdomain)
+        return client.delete(f"/domain/zone/adrwal.pl/record/{record_id}")
+
+    @staticmethod
+    def get_A_record_id(subdomain: str):
+        result = client.get(
+            "/domain/zone/adrwal.pl/record", fieldType="A", subDomain=subdomain
+        )
+        return result[0]
+
+    @staticmethod
+    def add_A_record(subdomain: str, target: str):
+        return client.post(
+            "/domain/zone/adrwal.pl/record/",
+            target=target,
+            subDomain=subdomain,
+            fieldType="A",
+        )
+
+    @staticmethod
+    def refresh_dns_zone():
+        return client.post("/domain/zone/adrwal.pl/refresh")
+
+
 @app.command()
 def update(
     domain: Annotated[str, typer.Option()],
-    subdomain: Annotated[List[str], typer.Option()],
+    subdomains_list: Annotated[
+        List[str], typer.Option("--subdomain", "-s", help="Subdomains to update")
+    ],
     force: bool = False,
 ):
     if not AppDirHandler.app_dir_exists():
@@ -102,6 +132,21 @@ def update(
 
     prev_ip = AppDirHandler.get_prev_ip()
     current_ip = get_current_ip()
+
+    if prev_ip != current_ip or force:
+        for subdomain in subdomains_list:
+            OVHApiController.delete_A_record(subdomain)
+            OVHApiController.add_A_record(subdomain, current_ip)
+
+        OVHApiController.refresh_dns_zone()
+
+        with open(AppDirHandler.get_prev_ip_file_path(), "w") as f:
+            f.write(current_ip)
+
+        typer.echo("DNS records updated.")
+        return
+
+    typer.echo("No changes detected.")
 
 
 if __name__ == "__main__":
