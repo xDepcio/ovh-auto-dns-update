@@ -92,21 +92,21 @@ class AppDirHandler:
 class OVHApiController:
 
     @staticmethod
-    def delete_A_record(subdomain: str):
-        record_id = OVHApiController.get_A_record_id(subdomain)
-        return client.delete(f"/domain/zone/adrwal.pl/record/{record_id}")
+    def delete_A_record(domain: str, subdomain: str):
+        record_id = OVHApiController.get_A_record_id(domain, subdomain)
+        return client.delete(f"/domain/zone/{domain}/record/{record_id}")
 
     @staticmethod
-    def get_A_record_id(subdomain: str):
+    def get_A_record_id(domain: str, subdomain: str):
         result = client.get(
-            "/domain/zone/adrwal.pl/record", fieldType="A", subDomain=subdomain
+            f"/domain/zone/{domain}/record", fieldType="A", subDomain=subdomain
         )
         return result[0]
 
     @staticmethod
-    def add_A_record(subdomain: str, target: str):
+    def add_A_record(domain: str, subdomain: str, target: str):
         return client.post(
-            "/domain/zone/adrwal.pl/record/",
+            f"/domain/zone/{domain}/record/",
             target=target,
             subDomain=subdomain,
             fieldType="A",
@@ -135,8 +135,8 @@ def update(
 
     if prev_ip != current_ip or force:
         for subdomain in subdomains_list:
-            OVHApiController.delete_A_record(subdomain)
-            OVHApiController.add_A_record(subdomain, current_ip)
+            OVHApiController.delete_A_record(domain, subdomain)
+            OVHApiController.add_A_record(domain, subdomain, current_ip)
 
         OVHApiController.refresh_dns_zone()
 
