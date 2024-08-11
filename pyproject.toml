@@ -5,7 +5,10 @@ description = "Automatically update OVH DNS settings when your IP changes"
 authors = [
     {name = "xDepcio", email = "olek.drwal@gmail.com"},
 ]
-dependencies = []
+dependencies = [
+    "ovh>=1.2.0",
+    "python-dotenv>=1.0.1",
+]
 requires-python = ">=3.12"
 readme = "README.md"
 license = {text = "MIT"}
