@@ -25,6 +25,9 @@ jobs:
         ASSET_NAME="ovh_auto_dns_update-$(date +'%Y-%m-%d-%H-%M-%S')"
         TAG_NAME="v$(date +'%Y-%m-%d-%H-%M-%S')"
         ASSET_PATH="./dist/main"
+        echo "ASSET_NAME=$ASSET_NAME" >> $GITHUB_ENV
+        echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
+        echo "ASSET_PATH=$ASSET_PATH" >> $GITHUB_ENV
 
     - name: Create Draft Release
       id: create_release
