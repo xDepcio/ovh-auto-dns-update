@@ -15,18 +15,18 @@ app = typer.Typer()
 
 @app.command()
 def update(
-    domain: Annotated[str, typer.Option()],
+    domain: Annotated[str, typer.Option("--domain", "-d", help="Domain to update")],
     subdomains_list: Annotated[
         List[str], typer.Option("--subdomain", "-s", help="Subdomains to update")
     ],
     application_key: Annotated[
-        str, typer.Option("--application-key", "-k", help="Application key")
+        str, typer.Option("--application-key", "-k", help="OVH Application key")
     ],
     application_secret: Annotated[
-        str, typer.Option("--application-secret", "-a", help="Application secret")
+        str, typer.Option("--application-secret", "-a", help="OVH Application secret")
     ],
     consumer_key: Annotated[
-        str, typer.Option("--consumer-key", "-c", help="Consumer key")
+        str, typer.Option("--consumer-key", "-c", help="OVH Consumer key")
     ],
     force: bool = False,
 ):
