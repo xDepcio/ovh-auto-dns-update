@@ -23,6 +23,8 @@ jobs:
         pdm install
         pdm run pyinstaller --onefile ./src/ovh_auto_dns_update/main.py
         ASSET_NAME="ovh_auto_dns_update-$(date +'%Y-%m-%d-%H-%M-%S')"
+        TAG_NAME="v$(date +'%Y-%m-%d-%H-%M-%S')"
+        ASSET_PATH="./dist/main"
 
     - name: Create Draft Release
       id: create_release
