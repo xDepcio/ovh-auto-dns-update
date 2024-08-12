@@ -1,0 +1,51 @@
+name: Post Release
+
+on:
+  push:
+    branches:
+      # all branches
+      - '*'
+
+jobs:
+  release-assets:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up python 3.12
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+
+    - name: Build
+      run: |
+        pip install pdm
+        pdm install
+        pyinstaller --onefile ./src/ovh_auto_dns_update/main.py
+        ASSET_NAME="ovh_auto_dns_update-$(date +'%Y-%m-%d-%H-%M-%S')"
+
+    - name: Create Draft Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ env.TAG_NAME }}
+        release_name: Release ${{ env.ASSET_NAME }}
+        draft: true
+        prerelease: false
+
+    - uses: actions/upload-release-asset@v1.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ${{  env.ASSET_PATH }}
+        asset_name: ${{  env.ASSET_NAME }}
+        asset_content_type: application/gzip
+
+    - uses: eregon/publish-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        release_id: ${{ steps.create_release.outputs.id }}
