@@ -23,7 +23,7 @@ def update(
         str, typer.Option("--application-key", "-k", help="Application key")
     ],
     application_secret: Annotated[
-        str, typer.Option("--application-secret", "-s", help="Application secret")
+        str, typer.Option("--application-secret", "-a", help="Application secret")
     ],
     consumer_key: Annotated[
         str, typer.Option("--consumer-key", "-c", help="Consumer key")
